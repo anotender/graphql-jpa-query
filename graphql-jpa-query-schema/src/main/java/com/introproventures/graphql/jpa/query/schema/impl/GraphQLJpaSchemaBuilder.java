@@ -44,6 +44,9 @@ import javax.persistence.metamodel.PluralAttribute;
 import javax.persistence.metamodel.SingularAttribute;
 import javax.persistence.metamodel.Type;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.introproventures.graphql.jpa.query.annotation.GraphQLDescription;
 import com.introproventures.graphql.jpa.query.annotation.GraphQLIgnore;
 import com.introproventures.graphql.jpa.query.annotation.GraphQLIgnoreFilter;
@@ -53,6 +56,7 @@ import com.introproventures.graphql.jpa.query.schema.JavaScalars;
 import com.introproventures.graphql.jpa.query.schema.NamingStrategy;
 import com.introproventures.graphql.jpa.query.schema.impl.IntrospectionUtils.CachedIntrospectionResult.CachedPropertyDescriptor;
 import com.introproventures.graphql.jpa.query.schema.impl.PredicateFilter.Criteria;
+
 import graphql.Assert;
 import graphql.Scalars;
 import graphql.schema.Coercing;
@@ -71,8 +75,6 @@ import graphql.schema.GraphQLSchema;
 import graphql.schema.GraphQLType;
 import graphql.schema.GraphQLTypeReference;
 import graphql.schema.PropertyDataFetcher;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * JPA specific schema builder implementation of {code #GraphQLSchemaBuilder} interface
@@ -409,7 +411,7 @@ public class GraphQLJpaSchemaBuilder implements GraphQLSchemaBuilder {
                                                .collect(Collectors.toList())
             )
             .fields(managedType.getAttributes().stream()
-                                               .filter(this::isValidAssociation)    
+                                               .filter(Attribute::isAssociation)    
                                                .filter(this::isNotIgnored)
                                                .filter(this::isNotIgnoredFilter)
                                                .map(this::getWhereInputRelationField)
